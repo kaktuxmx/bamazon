@@ -8,7 +8,7 @@ const connectionsql = mysql.createConnection({
     host: 'localhost',
     port:3306,
     user:'root',
-    password:'Thorcito', // Here is where the passwords goes to start app in localhost.
+    password:'', // Here is where the passwords goes to start app in localhost.
     database:'bamazon'
 });
 
