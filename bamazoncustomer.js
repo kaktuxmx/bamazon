@@ -64,12 +64,13 @@ function buyingscript() {
         connectionsql.query(query1, function (err, res) {
             if (err) throw err;
             stockuoldvalue = (JSON.stringify(res[0].stock_quantity));
-            if (quantityfc <= stockuoldvalue){
+            
+            if (quantityfc < stockuoldvalue){
                     valuetoupdate = stockuoldvalue - quantityfc;
                         updatetablevalue(productselected, valuetoupdate);
                     } else {
                         console.log("Sorry there are no more products available. Try again with quantity equal or less than " + stockuoldvalue);
-                            
+                        connectionsql.end();
             }; 
                 })};
     
@@ -81,3 +82,8 @@ function buyingscript() {
                             connectionsql.end();
                             });
     };
+
+
+    // Database seems that is not updating correclty.
+    // Having issues with this update, also, the comparation on line 68 sometimes does not werk
+    // 
