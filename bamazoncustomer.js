@@ -8,7 +8,7 @@ const connectionsql = mysql.createConnection({
     host: 'localhost',
     port: 3306,
     user:'root',
-    password:'Thorcito', // Here is where the passwords goes to start app in localhost.
+    password:'', // Here is where the passwords goes to start app in localhost.
     database:'bamazon'
 });
 
@@ -63,12 +63,9 @@ function buyingscript() {
         query1 = "select stock_quantity from products where item_id = " + productselected;
         connectionsql.query(query1, function (err, res) {
             if (err) throw err;
-
             stockuoldvalue = (JSON.stringify(res[0].stock_quantity));
-
             if (quantityfc <= stockuoldvalue){
                     valuetoupdate = stockuoldvalue - quantityfc;
-                    console.log(valuetoupdate);
                         updatetablevalue(productselected, valuetoupdate);
                     } else {
                         console.log("Sorry there are no more products available. Try again with quantity equal or less than " + stockuoldvalue);
