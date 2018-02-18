@@ -10,6 +10,7 @@ const connectionsql = mysql.createConnection({
     user:'root',
     password:'', // Here is where the passwords goes to start app in localhost.
     database:'bamazon'
+
 });
 
 connectionsql.connect();
@@ -25,16 +26,18 @@ function display() {
       console.log("--------------------------Welcome to La Tienda in NODE!--------------------------------");
         for (var i = 0; i < res.length; i++) {
         table.push([res[i].item_id, res[i].product_name, res[i].department_name, res[i].price_tocust, res[i].stock_quantity]);
+        
     };
         console.log("---------------------------------------------------------------------------------------");
         console.log(table.toString());
-    
+    buyingscript();
        }
+
     )};
 
 
 display();
-buyingscript();
+
 // Create funtion to put the inquerer about the shoppoing.
 
 function buyingscript() {
@@ -53,24 +56,29 @@ function buyingscript() {
             filter: Number
             }
     ]).then( res => {
-        productnumber = JSON.stringify(res.product_id);
-        quantityamount = JSON.stringify(res.quantity);
+        productnumber = parseInt(res.product_id);
+        quantityamount = parseInt(res.quantity);
         purchase(productnumber, quantityamount); 
-    }) };
+    })
+
+    };
 
 
     function purchase (productselected, quantityfc) {
         query1 = "select stock_quantity from products where item_id = " + productselected;
         connectionsql.query(query1, function (err, res) {
             if (err) throw err;
-            stockuoldvalue = (JSON.stringify(res[0].stock_quantity));
-            
-            if (quantityfc < stockuoldvalue){
+           
+            stockuoldvalue = parseInt(res[0].stock_quantity);
+            if (quantityfc <= stockuoldvalue){
+
+
                     valuetoupdate = stockuoldvalue - quantityfc;
                         updatetablevalue(productselected, valuetoupdate);
+                
                     } else {
                         console.log("Sorry there are no more products available. Try again with quantity equal or less than " + stockuoldvalue);
-                        connectionsql.end();
+                keepbuying();
             }; 
                 })};
     
@@ -79,11 +87,26 @@ function buyingscript() {
         connectionsql.query(query2, function(err, ans){ 
                             if (err) throw err;
                             console.log("Thank you for your purchase!")
-                            connectionsql.end();
+                            keepbuying();
                             });
     };
 
 
-    // Database seems that is not updating correclty.
-    // Having issues with this update, also, the comparation on line 68 sometimes does not werk
-    // 
+    function keepbuying() {
+        inquirer.prompt([
+            {
+                type: 'confirm',
+                name: 'yesorno',
+                message: 'Do you want to continue spending all your money?',
+                default: true
+            }
+                ]).then( res => {
+                    answer = res.yesorno;
+                    if (answer === true) {
+                        display();
+                    } else {
+
+                        console.log("I want you to know, That I'm going to miss your love, The minute you walk out that screen... please dont go!!!!")
+                        connectionsql.end();
+                    };
+            })};
